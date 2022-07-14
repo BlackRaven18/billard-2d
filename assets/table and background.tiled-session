@@ -1,0 +1,36 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "table tiled map.tmx",
+    "expandedProjectPaths": [
+        "."
+    ],
+    "fileStates": {
+        "table tiled map.tmx": {
+            "scale": 1.5,
+            "selectedLayer": 2,
+            "viewCenter": {
+                "x": 192.66666666666669,
+                "y": 178
+            }
+        },
+        "table.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 0.75
+        }
+    },
+    "last.imagePath": "C:/Users/Arek/Desktop/billard assets",
+    "map.lastUsedFormat": "tmx",
+    "openFiles": [
+        "table tiled map.tmx",
+        "table.tsx"
+    ],
+    "project": "table and background.tiled-project",
+    "recentFiles": [
+        "table.tsx",
+        "table tiled map.tmx"
+    ],
+    "tileset.lastUsedFormat": "tsx"
+}
