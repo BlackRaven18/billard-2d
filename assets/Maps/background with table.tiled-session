@@ -12,11 +12,11 @@
             "scaleInEditor": 1
         },
         "table.tmx": {
-            "scale": 1,
-            "selectedLayer": 0,
+            "scale": 5.5,
+            "selectedLayer": 1,
             "viewCenter": {
-                "x": 640,
-                "y": 287
+                "x": 182.72727272727275,
+                "y": 75.09090909090908
             }
         }
     },
