@@ -1,0 +1,43 @@
+{
+    "Map/SizeTest": {
+        "height": 4300,
+        "width": 2
+    },
+    "activeFile": "table.tmx",
+    "expandedProjectPaths": [
+    ],
+    "fileStates": {
+        "table and background.tsx": {
+            "scaleInDock": 1,
+            "scaleInEditor": 1
+        },
+        "table.tmx": {
+            "scale": 1,
+            "selectedLayer": 0,
+            "viewCenter": {
+                "x": 640,
+                "y": 287
+            }
+        }
+    },
+    "last.imagePath": "C:/Users/Arek/Desktop/Billard-2D/assets/Maps",
+    "map.height": 36,
+    "map.lastUsedFormat": "tmx",
+    "map.tileHeight": 20,
+    "map.tileWidth": 20,
+    "map.width": 64,
+    "openFiles": [
+        "table.tmx",
+        "table and background.tsx"
+    ],
+    "project": "background with table.tiled-project",
+    "recentFiles": [
+        "table and background.tsx",
+        "table.tmx"
+    ],
+    "tileset.lastUsedFormat": "tsx",
+    "tileset.tileSize": {
+        "height": 20,
+        "width": 20
+    }
+}
