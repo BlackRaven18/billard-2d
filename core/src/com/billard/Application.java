@@ -4,10 +4,12 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
@@ -53,6 +55,7 @@ public class Application extends ApplicationAdapter {
 
 	//batches
 	private SpriteBatch batch;
+	private ShapeRenderer shapeRenderer;
 
 	//managers
 	AssetManager assetManager;
@@ -76,10 +79,11 @@ public class Application extends ApplicationAdapter {
 
 		createBills();
 
-		player.applyForceToCenter(1000 * 2, 0, false);
+		//player.applyForceToCenter(1000 * 2, 0, false);
 
 		// creating batch
 		batch = new SpriteBatch();
+		shapeRenderer = new ShapeRenderer();
 
 		//loading tiled map and creating tiled map renderer
 		map = new TmxMapLoader().load("Maps/table.tmx");
@@ -109,6 +113,11 @@ public class Application extends ApplicationAdapter {
 		batch.begin();
 
 		batch.end();
+
+		shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+		shapeRenderer.setColor(Color.WHITE);
+		shapeRenderer.line(player.getPosition().x * PPM, player.getPosition().y * PPM, Gdx.input.getX(),WORLD_PIXEL_HEIGHT - Gdx.input.getY());
+		shapeRenderer.end();
 
 		b2dr.render(world, camera.combined);
 
@@ -183,6 +192,7 @@ public class Application extends ApplicationAdapter {
 		B2DBodyBuilder.createCircle(world, 44.4f, 17, 1, false);
 		B2DBodyBuilder.createCircle(world, 44.4f, 18, 1, false);
 	}
+
 
 
 }
