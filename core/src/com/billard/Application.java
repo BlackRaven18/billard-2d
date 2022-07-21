@@ -17,9 +17,11 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import utils.B2DBodyBuilder;
 import utils.B2DConstants;
+import utils.B2DObjectUtil;
 import utils.TiledObjectUtil;
 
 import static utils.B2DConstants.PPM;
+import static utils.B2DObjectUtil.*;
 
 public class Application extends ApplicationAdapter {
 
@@ -75,7 +77,7 @@ public class Application extends ApplicationAdapter {
 		camera.update();
 
 		//creating player
-		player = B2DBodyBuilder.createCircle(world, 16, 16.2f, 1, false);
+		player = B2DBodyBuilder.createCircle(world, 16, 16.2f, 0.5f, false);
 
 		createBills();
 
@@ -114,10 +116,7 @@ public class Application extends ApplicationAdapter {
 
 		batch.end();
 
-		shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
-		shapeRenderer.setColor(Color.WHITE);
-		shapeRenderer.line(player.getPosition().x * PPM, player.getPosition().y * PPM, Gdx.input.getX(),WORLD_PIXEL_HEIGHT - Gdx.input.getY());
-		shapeRenderer.end();
+		drawAndRotateStick(shapeRenderer, player.getPosition().x, player.getPosition().y, B2DObjectUtil.getCircleRadius(player));
 
 		b2dr.render(world, camera.combined);
 
@@ -171,27 +170,43 @@ public class Application extends ApplicationAdapter {
 
 	private void createBills(){
 
+		float radius = 0.5f;
+
 		//creating bills
-		B2DBodyBuilder.createCircle(world, 40, 16, 1, false);
+		B2DBodyBuilder.createCircle(world, 40, 16, radius, false);
 
-		B2DBodyBuilder.createCircle(world, 41.1f, 16.5f, 1, false);
-		B2DBodyBuilder.createCircle(world, 41.1f, 15.5f, 1, false);
+		B2DBodyBuilder.createCircle(world, 41.1f, 16.5f, radius, false);
+		B2DBodyBuilder.createCircle(world, 41.1f, 15.5f, radius, false);
 
-		B2DBodyBuilder.createCircle(world, 42.2f, 15, 1, false);
-		B2DBodyBuilder.createCircle(world, 42.2f, 16, 1, false);
-		B2DBodyBuilder.createCircle(world, 42.2f, 17, 1, false);
+		B2DBodyBuilder.createCircle(world, 42.2f, 15, radius, false);
+		B2DBodyBuilder.createCircle(world, 42.2f, 16, radius, false);
+		B2DBodyBuilder.createCircle(world, 42.2f, 17, radius, false);
 
-		B2DBodyBuilder.createCircle(world, 43.3f, 14.5f, 1, false);
-		B2DBodyBuilder.createCircle(world, 43.3f, 15.5f, 1, false);
-		B2DBodyBuilder.createCircle(world, 43.3f, 16.5f, 1, false);
-		B2DBodyBuilder.createCircle(world, 43.3f, 17.5f, 1, false);
+		B2DBodyBuilder.createCircle(world, 43.3f, 14.5f, radius, false);
+		B2DBodyBuilder.createCircle(world, 43.3f, 15.5f, radius, false);
+		B2DBodyBuilder.createCircle(world, 43.3f, 16.5f, radius, false);
+		B2DBodyBuilder.createCircle(world, 43.3f, 17.5f, radius, false);
 
-		B2DBodyBuilder.createCircle(world, 44.4f, 14, 1, false);
-		B2DBodyBuilder.createCircle(world, 44.4f, 15, 1, false);
-		B2DBodyBuilder.createCircle(world, 44.4f, 16, 1, false);
-		B2DBodyBuilder.createCircle(world, 44.4f, 17, 1, false);
-		B2DBodyBuilder.createCircle(world, 44.4f, 18, 1, false);
+		B2DBodyBuilder.createCircle(world, 44.4f, 14, radius, false);
+		B2DBodyBuilder.createCircle(world, 44.4f, 15, radius, false);
+		B2DBodyBuilder.createCircle(world, 44.4f, 16, radius, false);
+		B2DBodyBuilder.createCircle(world, 44.4f, 17, radius, false);
+		B2DBodyBuilder.createCircle(world, 44.4f, 18, radius, false);
 	}
+
+	private void drawAndRotateStick(ShapeRenderer renderer, float ballX, float ballY, float ballRadius){
+
+		renderer.begin(ShapeRenderer.ShapeType.Line);
+		renderer.setColor(Color.WHITE);
+
+		//TODO: revise points
+		renderer.line(getBodyXInPixels(player), getBodyYInPixels(player),  getBodyXInPixels(player) - (Gdx.input.getX() - getBodyXInPixels(player)),
+				WORLD_PIXEL_HEIGHT - Gdx.input.getY() - 2 * (WORLD_PIXEL_HEIGHT - Gdx.input.getY() - getBodyYInPixels(player)));
+		renderer.end();
+	}
+
+
+
 
 
 

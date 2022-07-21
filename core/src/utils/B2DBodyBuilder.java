@@ -18,7 +18,7 @@ public class B2DBodyBuilder {
         pBody = world.createBody(def);
 
         CircleShape shape = new CircleShape();
-        shape.setRadius(radius / 2);
+        shape.setRadius(radius);
 
 
         FixtureDef fixtureDef = new FixtureDef();

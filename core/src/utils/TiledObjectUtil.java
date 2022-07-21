@@ -11,10 +11,7 @@ public class TiledObjectUtil {
         for(MapObject object : objects){
             Shape shape;
 
-            System.out.println(object.toString());
-
             if(object instanceof PolylineMapObject){
-                System.out.println("tutaj");
                 shape = createPolyLine((PolylineMapObject) object);
             } else{
                 continue;
