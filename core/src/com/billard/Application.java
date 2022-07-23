@@ -15,11 +15,13 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.*;
 import utils.B2DBodyBuilder;
 import utils.B2DConstants;
 import utils.TiledObjectUtil;
 
+import static java.lang.Float.NaN;
 import static utils.B2DConstants.PPM;
 import static utils.B2DObjectUtil.*;
 import static utils.Utils.*;
@@ -30,7 +32,7 @@ public class Application extends ApplicationAdapter {
 
 	public static final String APP_TITLE = "Billard 2D";
 	public static final float APP_VERSION = 0.1f;
-	public static final int APP_FPS = 60;
+	public static final int APP_FPS = 30;
 
 	public static final int WORLD_PIXEL_WIDTH = 1280;
 	public static final int WORLD_PIXEL_HEIGHT = 720;
@@ -115,6 +117,7 @@ public class Application extends ApplicationAdapter {
 
 		assetManager = new AssetManager();
 
+
 	}
 
 
@@ -125,13 +128,11 @@ public class Application extends ApplicationAdapter {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 
+
 		camera.update();
 
 		tmr.setView(camera);
 		tmr.render();
-
-		//angle += 0.5 % 360;
-		billardStickSprite.setRotation(angle);
 
 
 		batch.setProjectionMatrix(camera.combined);
@@ -234,9 +235,67 @@ public class Application extends ApplicationAdapter {
 				WORLD_PIXEL_HEIGHT - getMouseY() - 2 * (WORLD_PIXEL_HEIGHT - Gdx.input.getY() - getBodyYInPixels(body)));
 
 		renderer.end();
+
+		//TODO: TEST
+		Vector2 line1 = new Vector2(0, 324);
+		Vector2 line2 = getEquationOfLine(new Vector2(320, 324), new Vector2(getMouseX(), WORLD_PIXEL_HEIGHT - getMouseY()));
+
+
+		//angle += 0.5 % 360;
+
+		angle = getAngleBetweenTwoLines(line1, line2);
+
+
+
+
+		// II quater
+		if(getMouseX() < getBodyXInPixels(body)){
+			if(WORLD_PIXEL_HEIGHT - getMouseY() > getBodyYInPixels(body)){
+				angle = -90 - (90 - angle);
+			}else {
+				angle = -180 + angle;
+			}
+		}
+
+		angle = 180 + (-angle);
+		System.out.println("Angle = " + angle);
+
+		billardStickSprite.setRotation(angle);
 	}
 
-	//private float
+	private Vector2 getEquationOfLine(Vector2 point1, Vector2 point2){
+		float a = (point1.y - point2.y) / (point1.x - point2.x);
+		float b = point1.y - (a * point1.x);
+
+		return new Vector2(a, b);
+	}
+
+	private float getAngleBetweenTwoLines(Vector2 line1, Vector2 line2){
+
+		double a1 = line1.x;
+		double a2 = line2.x;
+
+		double formulae = (a1 - a2) / (1 + a1 * a2);
+		float deg = (float)Math.toDegrees(Math.atan(formulae));
+
+		if(Float.isNaN(deg)){
+			deg = -90;
+		}
+//
+//		//deg = deg < 0? -deg : 90 + deg;
+//
+//		if(deg < 0){
+//			deg = -deg;
+//		}
+
+
+
+
+//		deg = deg > 0 ? 360 - deg : 0 - deg;
+
+		return deg;
+
+	}
 
 
 
