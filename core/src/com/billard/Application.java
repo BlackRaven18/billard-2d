@@ -3,28 +3,22 @@ package com.billard;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.World;
 import utils.B2DBodyBuilder;
 import utils.B2DConstants;
 import utils.TiledObjectUtil;
 
-import static java.lang.Float.NaN;
 import static utils.B2DConstants.PPM;
-import static utils.B2DObjectUtil.*;
-import static utils.Utils.*;
 
 @SuppressWarnings("FieldCanBeLocal")
 
@@ -60,12 +54,12 @@ public class Application extends ApplicationAdapter {
 	//player
 	private Body player;
 
+	private BillardStick billardStick;
+
 	//batches
 	private SpriteBatch batch;
 	private ShapeRenderer shapeRenderer;
 
-	private Texture billardStick;
-	private Sprite billardStickSprite;
 
 	//managers
 	private MyAssetManager myAssetManager;
@@ -93,6 +87,8 @@ public class Application extends ApplicationAdapter {
 
 		//player.applyForceToCenter(1000 * 2, 0, false);
 
+		billardStick = new BillardStick(player);
+
 		// creating batch
 		batch = new SpriteBatch();
 		shapeRenderer = new ShapeRenderer();
@@ -103,21 +99,8 @@ public class Application extends ApplicationAdapter {
 
 		TiledObjectUtil.parseTiledObjectLayer(world, map.getLayers().get("collision-layer").getObjects());
 
-		billardStick = new Texture("Images/billard-stick-2.png");
-
-		billardStickSprite = new Sprite(billardStick);
-		billardStickSprite.setOrigin(0,0);
-		angle = 0;
-		billardStickSprite.setRotation(angle);
-		billardStickSprite.setPosition(getBodyXInUnits(player),
-				getBodyYInUnits(player));
-		billardStickSprite.setSize(billardStick.getWidth() / PPM, billardStick.getHeight() / PPM);
-
-
 
 		myAssetManager = MyAssetManager.getInstance();
-		myAssetManager.loadTextures();
-
 
 	}
 
@@ -139,12 +122,11 @@ public class Application extends ApplicationAdapter {
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
 
-
-		billardStickSprite.draw(batch);
+		billardStick.drawStick(batch);
 
 		batch.end();
 
-		drawAndRotateStick(shapeRenderer, player);
+		billardStick.drawAndRotateStick(shapeRenderer, player);
 
 
 		if(DEBUG) {
@@ -224,86 +206,6 @@ public class Application extends ApplicationAdapter {
 		B2DBodyBuilder.createCircle(world, 44.4f, 17, radius, false);
 		B2DBodyBuilder.createCircle(world, 44.4f, 18, radius, false);
 	}
-
-	private void drawAndRotateStick(ShapeRenderer renderer, Body body){
-
-		renderer.begin(ShapeRenderer.ShapeType.Line);
-		renderer.setColor(Color.WHITE);
-
-		//TODO: revise points
-		renderer.line(getBodyXInPixels(body), getBodyYInPixels(body),  getBodyXInPixels(body) - (getMouseX() - getBodyXInPixels(body)),
-				WORLD_PIXEL_HEIGHT - getMouseY() - 2 * (WORLD_PIXEL_HEIGHT - Gdx.input.getY() - getBodyYInPixels(body)));
-
-		renderer.end();
-
-		//TODO: TEST
-		Vector2 line1 = new Vector2(0, 324);
-		Vector2 line2 = getEquationOfLine(new Vector2(320, 324), new Vector2(getMouseX(), WORLD_PIXEL_HEIGHT - getMouseY()));
-
-
-		//angle += 0.5 % 360;
-
-		angle = getAngleBetweenTwoLines(line1, line2);
-
-
-
-
-		// II quater
-		if(getMouseX() < getBodyXInPixels(body)){
-
-			angle += 5;
-
-			if(WORLD_PIXEL_HEIGHT - getMouseY() > getBodyYInPixels(body)){
-				angle = -90 - (90 - angle);
-			}else {
-				angle = -180 + angle;
-			}
-		} else {
-			angle += 5;
-		}
-
-		angle = 180 + (-angle);
-		System.out.println("Angle = " + angle);
-
-		billardStickSprite.setRotation(angle);
-	}
-
-	private Vector2 getEquationOfLine(Vector2 point1, Vector2 point2){
-		float a = (point1.y - point2.y) / (point1.x - point2.x);
-		float b = point1.y - (a * point1.x);
-
-		return new Vector2(a, b);
-	}
-
-	private float getAngleBetweenTwoLines(Vector2 line1, Vector2 line2){
-
-		double a1 = line1.x;
-		double a2 = line2.x;
-
-		double formulae = (a1 - a2) / (1 + a1 * a2);
-		float deg = (float)Math.toDegrees(Math.atan(formulae));
-
-		if(Float.isNaN(deg)){
-			deg = -90;
-		}
-//
-//		//deg = deg < 0? -deg : 90 + deg;
-//
-//		if(deg < 0){
-//			deg = -deg;
-//		}
-
-
-
-
-//		deg = deg > 0 ? 360 - deg : 0 - deg;
-
-		return deg;
-
-	}
-
-
-
 
 
 

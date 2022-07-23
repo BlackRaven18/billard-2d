@@ -26,13 +26,13 @@ public final class MyAssetManager {
         return instance;
     }
 
-    public void loadTextures(){
+    private void loadTextures(){
         manager.load("Images/spritesheet.txt", TextureAtlas.class);
         manager.finishLoading();
     }
 
     public Sprite getBillardStickSprite(){
-        return textureAtlas.createSprite("billard-stick-2.png");
+        return textureAtlas.createSprite("billard-stick-2");
     }
 
 
