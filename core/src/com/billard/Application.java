@@ -68,7 +68,7 @@ public class Application extends ApplicationAdapter {
 	private Sprite billardStickSprite;
 
 	//managers
-	private AssetManager assetManager;
+	private MyAssetManager myAssetManager;
 
 	private float angle;
 
@@ -115,7 +115,8 @@ public class Application extends ApplicationAdapter {
 
 
 
-		assetManager = new AssetManager();
+		myAssetManager = MyAssetManager.getInstance();
+		myAssetManager.loadTextures();
 
 
 	}
@@ -138,8 +139,7 @@ public class Application extends ApplicationAdapter {
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
 
-		//batch.draw(billardStick, getBodyXInUnits(player), getBodyYInUnits(player), billardStick.getWidth() / PPM, billardStick.getHeight() / PPM);
-		//batch.draw()
+
 		billardStickSprite.draw(batch);
 
 		batch.end();
@@ -250,11 +250,16 @@ public class Application extends ApplicationAdapter {
 
 		// II quater
 		if(getMouseX() < getBodyXInPixels(body)){
+
+			angle += 5;
+
 			if(WORLD_PIXEL_HEIGHT - getMouseY() > getBodyYInPixels(body)){
 				angle = -90 - (90 - angle);
 			}else {
 				angle = -180 + angle;
 			}
+		} else {
+			angle += 5;
 		}
 
 		angle = 180 + (-angle);
