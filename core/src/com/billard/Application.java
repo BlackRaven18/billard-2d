@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -17,11 +18,13 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import utils.B2DBodyBuilder;
 import utils.B2DConstants;
-import utils.B2DObjectUtil;
 import utils.TiledObjectUtil;
 
 import static utils.B2DConstants.PPM;
 import static utils.B2DObjectUtil.*;
+import static utils.Utils.*;
+
+@SuppressWarnings("FieldCanBeLocal")
 
 public class Application extends ApplicationAdapter {
 
@@ -37,7 +40,7 @@ public class Application extends ApplicationAdapter {
 	public static final float WORLD_WIDTH = WORLD_PIXEL_WIDTH / PPM; //in meter
 	public static final float WORLD_HEIGHT = WORLD_PIXEL_HEIGHT / PPM; //in meter
 
-	private final boolean DEBUG = false;
+	private final boolean DEBUG = true;
 
 	// camera
 	private OrthographicCamera camera;
@@ -59,8 +62,13 @@ public class Application extends ApplicationAdapter {
 	private SpriteBatch batch;
 	private ShapeRenderer shapeRenderer;
 
+	private Texture billardStick;
+	private Sprite billardStickSprite;
+
 	//managers
-	AssetManager assetManager;
+	private AssetManager assetManager;
+
+	private float angle;
 
 	@Override
 	public void create () {
@@ -93,6 +101,18 @@ public class Application extends ApplicationAdapter {
 
 		TiledObjectUtil.parseTiledObjectLayer(world, map.getLayers().get("collision-layer").getObjects());
 
+		billardStick = new Texture("Images/billard-stick-2.png");
+
+		billardStickSprite = new Sprite(billardStick);
+		billardStickSprite.setOrigin(0,0);
+		angle = 0;
+		billardStickSprite.setRotation(angle);
+		billardStickSprite.setPosition(getBodyXInUnits(player),
+				getBodyYInUnits(player));
+		billardStickSprite.setSize(billardStick.getWidth() / PPM, billardStick.getHeight() / PPM);
+
+
+
 		assetManager = new AssetManager();
 
 	}
@@ -110,15 +130,25 @@ public class Application extends ApplicationAdapter {
 		tmr.setView(camera);
 		tmr.render();
 
+		//angle += 0.5 % 360;
+		billardStickSprite.setRotation(angle);
+
 
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
 
+		//batch.draw(billardStick, getBodyXInUnits(player), getBodyYInUnits(player), billardStick.getWidth() / PPM, billardStick.getHeight() / PPM);
+		//batch.draw()
+		billardStickSprite.draw(batch);
+
 		batch.end();
 
-		drawAndRotateStick(shapeRenderer, player.getPosition().x, player.getPosition().y, B2DObjectUtil.getCircleRadius(player));
+		drawAndRotateStick(shapeRenderer, player);
 
-		b2dr.render(world, camera.combined);
+
+		if(DEBUG) {
+			b2dr.render(world, camera.combined);
+		}
 
 
 	}
@@ -194,16 +224,19 @@ public class Application extends ApplicationAdapter {
 		B2DBodyBuilder.createCircle(world, 44.4f, 18, radius, false);
 	}
 
-	private void drawAndRotateStick(ShapeRenderer renderer, float ballX, float ballY, float ballRadius){
+	private void drawAndRotateStick(ShapeRenderer renderer, Body body){
 
 		renderer.begin(ShapeRenderer.ShapeType.Line);
 		renderer.setColor(Color.WHITE);
 
 		//TODO: revise points
-		renderer.line(getBodyXInPixels(player), getBodyYInPixels(player),  getBodyXInPixels(player) - (Gdx.input.getX() - getBodyXInPixels(player)),
-				WORLD_PIXEL_HEIGHT - Gdx.input.getY() - 2 * (WORLD_PIXEL_HEIGHT - Gdx.input.getY() - getBodyYInPixels(player)));
+		renderer.line(getBodyXInPixels(body), getBodyYInPixels(body),  getBodyXInPixels(body) - (getMouseX() - getBodyXInPixels(body)),
+				WORLD_PIXEL_HEIGHT - getMouseY() - 2 * (WORLD_PIXEL_HEIGHT - Gdx.input.getY() - getBodyYInPixels(body)));
+
 		renderer.end();
 	}
+
+	//private float
 
 
 
