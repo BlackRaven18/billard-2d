@@ -71,6 +71,7 @@ public class Application extends ApplicationAdapter {
 
 		//creating world
 		world = new World(new Vector2(0, 0), false);
+		world.step(1 / 60f, 6, 2);
 
 		//creating debug renderer
 		b2dr = new Box2DDebugRenderer();
@@ -107,17 +108,16 @@ public class Application extends ApplicationAdapter {
 
 	@Override
 	public void render () {
-		update(Gdx.graphics.getDeltaTime());
 		Gdx.gl.glClearColor(0f, 0f, 0f, 1f);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 
+		//logic
+		update(Gdx.graphics.getDeltaTime());
 
-		camera.update();
 
-		tmr.setView(camera);
+		//drawing
 		tmr.render();
-
 
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
@@ -125,8 +125,6 @@ public class Application extends ApplicationAdapter {
 		billardStick.drawStick(batch);
 
 		batch.end();
-
-		billardStick.drawAndRotateStick(shapeRenderer, player);
 
 
 		if(DEBUG) {
@@ -153,9 +151,11 @@ public class Application extends ApplicationAdapter {
 	}
 
 	public void update(float delta){
-		world.step(1 / 60f, 6, 2);
 
 		tmr.setView(camera);
+
+		billardStick.rotateStick(shapeRenderer, player);
+
 
 		inputUpdate(delta);
 		camera.update();

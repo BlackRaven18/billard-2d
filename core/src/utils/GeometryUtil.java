@@ -2,8 +2,8 @@ package utils;
 
 import com.badlogic.gdx.math.Vector2;
 
-public final class LinesManager {
-    public LinesManager(){}
+public final class GeometryUtil {
+    public GeometryUtil(){}
 
     public static LineEquation getEquationOfLine(Vector2 point1, Vector2 point2){
         float a = (point1.y - point2.y) / (point1.x - point2.x);
