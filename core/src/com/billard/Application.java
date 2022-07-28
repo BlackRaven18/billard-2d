@@ -26,7 +26,7 @@ public class Application extends ApplicationAdapter {
 
 	public static final String APP_TITLE = "Billard 2D";
 	public static final float APP_VERSION = 0.1f;
-	public static final int APP_FPS = 30;
+	public static final int APP_FPS = 60;
 
 	public static final int WORLD_PIXEL_WIDTH = 1280;
 	public static final int WORLD_PIXEL_HEIGHT = 720;
@@ -64,14 +64,12 @@ public class Application extends ApplicationAdapter {
 	//managers
 	private MyAssetManager myAssetManager;
 
-	private float angle;
 
 	@Override
 	public void create () {
 
 		//creating world
 		world = new World(new Vector2(0, 0), false);
-		world.step(1 / 60f, 6, 2);
 
 		//creating debug renderer
 		b2dr = new Box2DDebugRenderer();
@@ -85,8 +83,6 @@ public class Application extends ApplicationAdapter {
 		player = B2DBodyBuilder.createCircle(world, 16, 16.2f, 0.5f, false);
 
 		createBills();
-
-		//player.applyForceToCenter(1000 * 2, 0, false);
 
 		billardStick = new BillardStick(player);
 
@@ -122,7 +118,7 @@ public class Application extends ApplicationAdapter {
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
 
-		billardStick.drawStick(batch);
+		billardStick.drawStick(batch, player);
 
 		batch.end();
 
@@ -151,13 +147,18 @@ public class Application extends ApplicationAdapter {
 	}
 
 	public void update(float delta){
+		world.step(1 / 60f, 6, 2);
 
 		tmr.setView(camera);
 
 		billardStick.rotateStick(shapeRenderer, player);
+		billardStick.hitBall(player);
+
+		//TODO: delete this after tests
+		billardStick.calculateDistance(player);
 
 
-		inputUpdate(delta);
+//		inputUpdate(delta);
 		camera.update();
 	}
 
@@ -178,7 +179,7 @@ public class Application extends ApplicationAdapter {
 
 		}
 
-		//player.setLinearVelocity(horizontalForce * 5, player.getLinearVelocity().y);
+		player.setLinearVelocity(horizontalForce * 5, player.getLinearVelocity().y);
 	}
 
 	private void createBills(){

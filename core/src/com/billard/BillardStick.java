@@ -1,5 +1,7 @@
 package com.billard;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -36,9 +38,9 @@ public class BillardStick {
 
     public void rotateStick(ShapeRenderer renderer, Body body) {
 
-
+        // current angle
         float prevAngle;
-        prevAngle = angle; // current angle
+        prevAngle = angle;
 
 //        renderer.begin(ShapeRenderer.ShapeType.Line);
 //        renderer.setColor(Color.WHITE);
@@ -53,8 +55,8 @@ public class BillardStick {
         LineEquation line1 = new LineEquation(0, getBodyYInPixels(body));
 
         // line from center of the white ball to mouse position
-        LineEquation line2 = GeometryUtil.getEquationOfLine(new Vector2(320, 324), new Vector2(getMouseX(), WORLD_PIXEL_HEIGHT - getMouseY()));
-
+        LineEquation line2 = GeometryUtil.getEquationOfLine(new Vector2(getBodyXInPixels(body), getBodyYInPixels(body)),
+                new Vector2(getMouseX(), WORLD_PIXEL_HEIGHT - getMouseY()));
 
 
         angle = GeometryUtil.getAngleBetweenTwoLines(line1.getA(), line2.getA());
@@ -94,8 +96,6 @@ public class BillardStick {
         // rotating stick mirrored to coursor position
         angle += 180;
 
-        System.out.println("angle = " + angle);
-
 
         //lerp
         //a + (b - a) * lerp;
@@ -106,9 +106,43 @@ public class BillardStick {
         billardStickSprite.setRotation(angle);
     }
 
-    public void drawStick(SpriteBatch batch){
+    public void hitBall(Body ball){
+        float forceX, forceY;
+        float power = 1.19f;
+
+
+        if(Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)){
+            forceX = getMouseX() - getBodyXInPixels(ball);
+            forceY = WORLD_PIXEL_HEIGHT - getMouseY() - getBodyYInPixels(ball);
+
+//            Vector2 impulse = new Vector2(50, 50);
+//            Vector2 point = new Vector2(getBodyXInUnits(ball), getBodyYInUnits(ball));
+//            ball.applyLinearImpulse(impulse, point, false);
+            ball.applyForceToCenter(forceX * power, forceY * power, false);
+        }
+
+    }
+
+    public void drawStick(SpriteBatch batch, Body ball){
+        billardStickSprite.setPosition(getBodyXInUnits(ball), getBodyYInUnits(ball));
         billardStickSprite.draw(batch);
     }
+
+    public void calculateDistance(Body ball){
+        double length;
+        length = Math.sqrt(Math.pow(getMouseX() - getBodyXInPixels(ball), 2) + Math.pow(getMouseY() - Application.WORLD_PIXEL_HEIGHT - getBodyYInPixels(ball), 2));
+
+        System.out.println("MOUSE X = " + getMouseX());
+        System.out.println("MOUSE Y = " + getMouseY());
+
+        System.out.println("BALL X = " + getBodyXInPixels(ball));
+        System.out.println("BALL Y = " + (Application.WORLD_PIXEL_HEIGHT - getBodyYInPixels(ball)));
+
+
+        System.out.println("LENGTH = " + length);
+    }
+
+
 }
 
 
