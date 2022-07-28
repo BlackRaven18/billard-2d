@@ -13,18 +13,17 @@ import utils.LineEquation;
 import static com.billard.Application.WORLD_VIRTUAL_PIXEL_HEIGHT;
 import static utils.B2DConstants.PPM;
 import static utils.B2DObjectUtil.*;
-import static utils.Utils.getMouseX;
-import static utils.Utils.getMouseY;
+import static utils.Utils.*;
 
 public class BillardStick {
 
     private Sprite billardStickSprite;
     private float angle;
     private final float angleAdjustment = 7;
+    private final float  linearBasicUnit = 1;
 
     public BillardStick(Body ball){
         loadAndInitiateStick(ball);
-
     }
 
     private void loadAndInitiateStick(Body ball){
@@ -36,7 +35,12 @@ public class BillardStick {
         billardStickSprite.setSize(billardStickSprite.getWidth() / PPM, billardStickSprite.getHeight() / PPM);
     }
 
-    public void rotateStick(ShapeRenderer renderer, Body body) {
+    public void manageBillardStick(Body ball){
+        rotateStick(ball);
+        hitBall(ball);
+    }
+
+    private void rotateStick(Body ball) {
 
         // current angle
         float prevAngle;
@@ -52,10 +56,10 @@ public class BillardStick {
 //        renderer.end();
 //
         // horizontal line crossing center of the white ball
-        LineEquation line1 = new LineEquation(0, getBodyYInPixels(body));
+        LineEquation line1 = new LineEquation(0, getBodyYInPixels(ball));
 
         // line from center of the white ball to mouse position
-        LineEquation line2 = GeometryUtil.getEquationOfLine(new Vector2(getBodyXInPixels(body), getBodyYInPixels(body)),
+        LineEquation line2 = GeometryUtil.getEquationOfLine(new Vector2(getBodyXInPixels(ball), getBodyYInPixels(ball)),
                 new Vector2(getMouseX(), getMouseY()));
 
 
@@ -63,9 +67,9 @@ public class BillardStick {
 
 
         //quaters adjustment
-        if(getMouseX() <= getBodyXInPixels(body)){
+        if(getMouseX() <= getBodyXInPixels(ball)){
 
-            if(getMouseY() > getBodyYInPixels(body)){
+            if(getMouseY() > getBodyYInPixels(ball)){
                 //II quater
                 angle = 90 + (90 - angle);
 
@@ -79,7 +83,7 @@ public class BillardStick {
                 angle = 180 - angle;
             }
         }else {
-            if(getMouseY() > getBodyYInPixels(body)){
+            if(getMouseY() > getBodyYInPixels(ball)){
                 // I quater
                 angle = -angle;
 
@@ -106,18 +110,27 @@ public class BillardStick {
         billardStickSprite.setRotation(angle);
     }
 
-    public void hitBall(Body ball){
-        float forceX, forceY;
-        float power = 1.19f;
+    private void hitBall(Body ball){
+        float directionXForce, directionYForce;
+        float vecLenght;
+        float normalizationValue;
+//        float adjustment = 1.19f;
+        float power = 100;
+
 
         if(Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)){
-            forceX = getMouseX() - getBodyXInPixels(ball);
-            forceY = getMouseY() - getBodyYInPixels(ball);
+            // making the ball to move to specific direction but using only the 'power' variable to define how fast
+            Vector2 ballPosition = new Vector2(getBodyXInPixels(ball), getBodyYInPixels(ball));
+            vecLenght = GeometryUtil.getVectorLength(ballPosition, getMousePoint());
 
-//            Vector2 impulse = new Vector2(50, 50);
-//            Vector2 point = new Vector2(getBodyXInUnits(ball), getBodyYInUnits(ball));
-//            ball.applyLinearImpulse(impulse, point, false);
-            ball.applyForceToCenter(forceX * power, forceY * power, false);
+            // calculating the value which will help in normalization the forces to make the ball move only by the specific unit
+            // we want to only use 'power' parameter to say how fast tha ball should go
+            normalizationValue = linearBasicUnit / vecLenght;
+
+            directionXForce = (getMouseX() - getBodyXInPixels(ball)) * normalizationValue;
+            directionYForce = (getMouseY() - getBodyYInPixels(ball)) * normalizationValue;
+
+            ball.applyForceToCenter(directionXForce * power, directionYForce  *  power, false);
         }
 
     }
@@ -127,27 +140,6 @@ public class BillardStick {
         billardStickSprite.draw(batch);
     }
 
-    public void calculateDistance(Body ball){
-//        double length;
-//        length = Math.sqrt(Math.pow(getMouseX() - getBodyXInPixels(ball), 2) + Math.pow(getMouseY() - Application.WORLD_VIRTUAL_PIXEL_HEIGHT - getBodyYInPixels(ball), 2));
-//
-//        System.out.println("MOUSE X = " + getMouseX());
-//        System.out.println("MOUSE Y = " + getMouseY());
-//
-//        System.out.println("BALL X = " + getBodyXInPixels(ball));
-//        System.out.println("BALL Y = " + (Application.WORLD_VIRTUAL_PIXEL_HEIGHT - getBodyYInPixels(ball)));
-//
-//
-//        System.out.println("LENGTH = " + length);
-
-//        System.out.println("BODY X = " + getBodyXInPixels(ball));
-//        System.out.println("BODY Y = " + getBodyYInPixels(ball));
-//
-//        System.out.println("MOUSE X = " + getMouseX());
-//        System.out.println("MOUSE Y = " + getMouseY());
-//        System.out.println("CONV MOUSE Y = " + (getMouseY()));
-//        System.out.println("SCALE = " + Application.scale);
-    }
 
 
 }

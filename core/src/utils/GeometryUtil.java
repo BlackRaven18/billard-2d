@@ -24,6 +24,10 @@ public final class GeometryUtil {
         }
 
         return deg;
+    }
+
+    public static float getVectorLength(Vector2 v1, Vector2 v2){
+        return (float)Math.sqrt(Math.pow(v1.x - v2.x, 2) + Math.pow(v1.y - v2.y, 2));
 
     }
 }

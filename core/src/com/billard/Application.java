@@ -163,12 +163,7 @@ public class Application extends Game {
 
 		tmr.setView(camera);
 
-		billardStick.rotateStick(shapeRenderer, player);
-		billardStick.hitBall(player);
-
-		//TODO: delete this after tests
-		billardStick.calculateDistance(player);
-
+		billardStick.manageBillardStick(player);
 
 //		inputUpdate(delta);
 		camera.update();
