@@ -1,0 +1,12 @@
+spritesheet.png
+size: 476, 70
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+billard-stick-2
+  rotate: false
+  xy: 0, 0
+  size: 476, 70
+  orig: 476, 70
+  offset: 0, 0
+  index: -1

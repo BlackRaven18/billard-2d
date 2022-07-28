@@ -1,6 +1,7 @@
 package com.billard;
 
 import com.badlogic.gdx.ApplicationAdapter;
+import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.GL20;
@@ -22,7 +23,7 @@ import static utils.B2DConstants.PPM;
 
 @SuppressWarnings("FieldCanBeLocal")
 
-public class Application extends ApplicationAdapter {
+public class Application extends Game {
 
 	public static final String APP_TITLE = "Billard 2D";
 	public static final float APP_VERSION = 0.1f;
@@ -30,9 +31,10 @@ public class Application extends ApplicationAdapter {
 
 	public static final int WORLD_PIXEL_WIDTH = 1280;
 	public static final int WORLD_PIXEL_HEIGHT = 720;
-	public static final int WORLD_VIRTUAL_PIXEL_WIDTH = 1280;
-	public static final int WORLD_VIRTUAL_PIXEL_HEIGHT = 720;
-	public static int scale = (WORLD_VIRTUAL_PIXEL_WIDTH * WORLD_VIRTUAL_PIXEL_HEIGHT) / (WORLD_PIXEL_WIDTH * WORLD_PIXEL_HEIGHT);
+	public static int WORLD_VIRTUAL_PIXEL_WIDTH = WORLD_PIXEL_WIDTH;
+	public static int WORLD_VIRTUAL_PIXEL_HEIGHT = WORLD_PIXEL_HEIGHT;
+	public static float scaleX = calculateWindowScaleX(WORLD_PIXEL_WIDTH, WORLD_VIRTUAL_PIXEL_WIDTH);
+	public static float scaleY = calculateWindowScaleY(WORLD_PIXEL_HEIGHT, WORLD_VIRTUAL_PIXEL_HEIGHT);
 	public static final float WORLD_WIDTH = WORLD_PIXEL_WIDTH / PPM; //in meter
 	public static final float WORLD_HEIGHT = WORLD_PIXEL_HEIGHT / PPM; //in meter
 
@@ -133,6 +135,16 @@ public class Application extends ApplicationAdapter {
 	@Override
 	public void resize(int width, int height) {
 		super.resize(width, height);
+
+		WORLD_VIRTUAL_PIXEL_WIDTH = width;
+		WORLD_VIRTUAL_PIXEL_HEIGHT = height;
+		scaleX = calculateWindowScaleX(WORLD_PIXEL_WIDTH, WORLD_VIRTUAL_PIXEL_WIDTH);
+		scaleY = calculateWindowScaleY(WORLD_PIXEL_HEIGHT, WORLD_VIRTUAL_PIXEL_HEIGHT);
+
+//		System.err.println("V_WIDTH = " + WORLD_VIRTUAL_PIXEL_WIDTH);
+//		System.err.println("V_HEIGHT = " + WORLD_VIRTUAL_PIXEL_HEIGHT);
+//		System.err.println("Scale = " + scale);
+
 		camera.update();
 	}
 
@@ -207,6 +219,16 @@ public class Application extends ApplicationAdapter {
 		B2DBodyBuilder.createCircle(world, 44.4f, 17, radius, false);
 		B2DBodyBuilder.createCircle(world, 44.4f, 18, radius, false);
 	}
+
+	private static float calculateWindowScaleX(float width, float vWidth){
+		return width/vWidth;
+	}
+
+	private static float calculateWindowScaleY(float height, float vHeight){
+		return height/vHeight;
+	}
+
+
 
 
 

@@ -10,7 +10,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import utils.GeometryUtil;
 import utils.LineEquation;
 
-import static com.billard.Application.WORLD_PIXEL_HEIGHT;
+import static com.billard.Application.WORLD_VIRTUAL_PIXEL_HEIGHT;
 import static utils.B2DConstants.PPM;
 import static utils.B2DObjectUtil.*;
 import static utils.Utils.getMouseX;
@@ -47,7 +47,7 @@ public class BillardStick {
 //
 //        //TODO: revise points
 //        renderer.line(getBodyXInPixels(body), getBodyYInPixels(body),  getBodyXInPixels(body) - (getMouseX() - getBodyXInPixels(body)),
-//                WORLD_PIXEL_HEIGHT - getMouseY() - 2 * (WORLD_PIXEL_HEIGHT - Gdx.input.getY() - getBodyYInPixels(body)));
+//                getMouseY() - 2 * (WORLD_VIRTUAL_PIXEL_HEIGHT - Gdx.input.getY() - getBodyYInPixels(body)));
 //
 //        renderer.end();
 //
@@ -56,7 +56,7 @@ public class BillardStick {
 
         // line from center of the white ball to mouse position
         LineEquation line2 = GeometryUtil.getEquationOfLine(new Vector2(getBodyXInPixels(body), getBodyYInPixels(body)),
-                new Vector2(getMouseX(), WORLD_PIXEL_HEIGHT - getMouseY()));
+                new Vector2(getMouseX(), getMouseY()));
 
 
         angle = GeometryUtil.getAngleBetweenTwoLines(line1.getA(), line2.getA());
@@ -65,7 +65,7 @@ public class BillardStick {
         //quaters adjustment
         if(getMouseX() <= getBodyXInPixels(body)){
 
-            if(WORLD_PIXEL_HEIGHT - getMouseY() > getBodyYInPixels(body)){
+            if(getMouseY() > getBodyYInPixels(body)){
                 //II quater
                 angle = 90 + (90 - angle);
 
@@ -79,7 +79,7 @@ public class BillardStick {
                 angle = 180 - angle;
             }
         }else {
-            if(WORLD_PIXEL_HEIGHT - getMouseY() > getBodyYInPixels(body)){
+            if(getMouseY() > getBodyYInPixels(body)){
                 // I quater
                 angle = -angle;
 
@@ -110,10 +110,9 @@ public class BillardStick {
         float forceX, forceY;
         float power = 1.19f;
 
-
         if(Gdx.input.isButtonJustPressed(Input.Buttons.LEFT)){
             forceX = getMouseX() - getBodyXInPixels(ball);
-            forceY = WORLD_PIXEL_HEIGHT - getMouseY() - getBodyYInPixels(ball);
+            forceY = getMouseY() - getBodyYInPixels(ball);
 
 //            Vector2 impulse = new Vector2(50, 50);
 //            Vector2 point = new Vector2(getBodyXInUnits(ball), getBodyYInUnits(ball));
@@ -129,17 +128,25 @@ public class BillardStick {
     }
 
     public void calculateDistance(Body ball){
-        double length;
-        length = Math.sqrt(Math.pow(getMouseX() - getBodyXInPixels(ball), 2) + Math.pow(getMouseY() - Application.WORLD_PIXEL_HEIGHT - getBodyYInPixels(ball), 2));
+//        double length;
+//        length = Math.sqrt(Math.pow(getMouseX() - getBodyXInPixels(ball), 2) + Math.pow(getMouseY() - Application.WORLD_VIRTUAL_PIXEL_HEIGHT - getBodyYInPixels(ball), 2));
+//
+//        System.out.println("MOUSE X = " + getMouseX());
+//        System.out.println("MOUSE Y = " + getMouseY());
+//
+//        System.out.println("BALL X = " + getBodyXInPixels(ball));
+//        System.out.println("BALL Y = " + (Application.WORLD_VIRTUAL_PIXEL_HEIGHT - getBodyYInPixels(ball)));
+//
+//
+//        System.out.println("LENGTH = " + length);
 
-        System.out.println("MOUSE X = " + getMouseX());
-        System.out.println("MOUSE Y = " + getMouseY());
-
-        System.out.println("BALL X = " + getBodyXInPixels(ball));
-        System.out.println("BALL Y = " + (Application.WORLD_PIXEL_HEIGHT - getBodyYInPixels(ball)));
-
-
-        System.out.println("LENGTH = " + length);
+//        System.out.println("BODY X = " + getBodyXInPixels(ball));
+//        System.out.println("BODY Y = " + getBodyYInPixels(ball));
+//
+//        System.out.println("MOUSE X = " + getMouseX());
+//        System.out.println("MOUSE Y = " + getMouseY());
+//        System.out.println("CONV MOUSE Y = " + (getMouseY()));
+//        System.out.println("SCALE = " + Application.scale);
     }
 
 
